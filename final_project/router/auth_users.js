@@ -5,12 +5,21 @@ const regd_users = express.Router();
 
 let users = [];
 
-const isValid = (username)=>{ //returns boolean
-//write code to check is the username is valid
+const isValid = (username)=>{ 
+    const doesUserExist= users.filter( user=> user.username == username)
+    if (doesUserExist.length > 0)
+    return true;
+
+    return false;
 }
 
 const authenticatedUser = (username,password)=>{ //returns boolean
-//write code to check if username and password match the one we have in records.
+  const validUser= users.filter( user=> user.username == username && user.password== password)
+  if(validUser.length >0){
+      return true
+  }
+
+  return false;
 }
 
 //only registered users can login

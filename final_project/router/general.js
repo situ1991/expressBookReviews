@@ -6,7 +6,12 @@ const public_users = express.Router();
 
 
 public_users.post("/register", (req,res) => {
-  //Write your code here
+   const username= req.body.username
+   const password= req.body.password
+   if(username && password){
+       isValid()
+   }
+
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
