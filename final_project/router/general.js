@@ -9,10 +9,16 @@ public_users.post("/register", (req,res) => {
    const username= req.body.username
    const password= req.body.password
    if(username && password){
-       isValid()
+       if(!isValid(username)){
+        users.push({"username":username, "password":password})
+        return res.status(201).json({message: username+": User Created"});
+       }
+       else{
+           return res.status(400).json({message: username+"Already Exist"});
+       }
    }
 
-  return res.status(300).json({message: "Yet to be implemented"});
+  return res.status(300).json({message: "Please enter UserName and Password"});
 });
 
 // Get the book list available in the shop
@@ -60,7 +66,11 @@ public_users.get('/title/:title',function (req, res) {
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const reviewBook= books[req.params.isbn]
+  if(reviewBook){
+      return res.status(200).json(reviewBook)
+  }
+  return res.status(404).json({message: "Book not found"});
 });
 
 module.exports.general = public_users;
