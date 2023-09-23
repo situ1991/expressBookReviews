@@ -28,8 +28,8 @@ public_users.get('/',async function (req, res) {
   try {
     const response = await axios.get('http://127.0.0.1:5000/books.json');
     console.log(response);
-    books=response.data
-    return res.status(200).send(JSON.stringify(books));
+    books=JSON.stringify(response.data)
+    return res.status(200).send(books);
   } catch (error) {
     console.error(error);
   }
@@ -50,7 +50,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
    const author= req.params.author
-   const bookobjects= Object.values(books)
+   const bookobjects= Object.values(JSON.parse(books))
 
    const filteredbooks= bookobjects.filter( book => book.author == author);
    if(filteredbooks.length >0){
@@ -62,13 +62,13 @@ public_users.get('/author/:author',function (req, res) {
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
     const title= req.params.title
-    const bookobjects= Object.values(books)
+    const bookobjects= Object.values(JSON.parse(books))
  
     const filteredbooks= bookobjects.filter( book => book.title == title);
     if(filteredbooks.length >0){
         return res.status(200).json(filteredbooks)
     }
-   return res.status(404).json({message: `No Book found with author ${title}`});
+   return res.status(404).json({message: `No Book found with title ${title}`});
 });
 
 //  Get book review
