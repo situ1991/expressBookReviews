@@ -1,10 +1,10 @@
 const express = require('express');
-let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+let axios=require("axios")
 const public_users = express.Router();
 
-
+let books = {}
 public_users.post("/register", (req,res) => {
    const username= req.body.username
    const password= req.body.password
@@ -22,10 +22,18 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
+public_users.get('/',async function (req, res) {
   //Write your code here
-   const allbooks= JSON.stringify(books)
-  return res.status(200).send(allbooks);
+  console.log(req)
+  try {
+    const response = await axios.get('http://127.0.0.1:5000/books.json');
+    console.log(response);
+    books=response.data
+    return res.status(200).send(JSON.stringify(books));
+  } catch (error) {
+    console.error(error);
+  }
+  
 });
 
 // Get book details based on ISBN

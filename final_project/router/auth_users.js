@@ -27,7 +27,6 @@ regd_users.post("/login", (req,res) => {
   
     const username=req.body.username
     const password=req.body.password
-    console.log(users)
     
     if (!username || !password) {
         return res.status(404).json({message: "Error logging in"});
@@ -50,30 +49,48 @@ regd_users.post("/login", (req,res) => {
 });
 
 // Add a book review
-regd_users.get("/auth/review/:isbn", (req, res) => {
+regd_users.put("/auth/review/:isbn", (req, res) => {
     const isbn=req.params.isbn
     const review= req.query.review
     const bookToReview= books[isbn]
-    const username= req.user
+    const userdata= req.user
+    console.log("Found Book",bookToReview)
+    console.log(userdata)
+     if(bookToReview){        
+            if(bookToReview.reviews?.username ==userdata.data){
+                bookToReview.reviews[username]=review
+            }else{
+            bookToReview.reviews[userdata.data]=review
+            }
+            console.log(bookToReview)
+               return res.status(200).json({message: "Review Modified"});
+             }
+            else{
+                return res.status(401).json({message: "Review Not Added"});
+             }
+        })
 
-    return res.send(bookToReview,username)
-//     console.log("Found Book",bookToReview)
-//     if(bookToReview){
-        
-//             if(!err){
-//                 bookToReview[0].reviews.append({"user":user.username, "review":review})
-//                 console.log("Books"+bookToReview)
-//                 return res.status(201).json({message: "Review Added"});
-//             }
-//             else{
-//                 return res.status(401).json({message: "Review Not Added"});
-//             }
-//         })
-//     }
 //   //Write your code here
 //   return res.status(404).json({message: "Please enter correct ISBN"});
-});
 
+regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn=req.params.isbn
+    const bookToReview= books[isbn]
+    const userdata= req.user
+    console.log("Found Book",bookToReview)
+    console.log(userdata)
+     if(bookToReview){        
+            
+            bookToReview.reviews[userdata.data]=""
+            console.log(bookToReview)
+               return res.status(200).json({message: "Review Deleted"});
+             }
+            else{
+                return res.status(401).json({message: "Review Not Deleted"});
+             }
+        
+
+})
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;
